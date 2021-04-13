@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>alert list index</title>
+    <style>
+        #test li {
+            cursor: pointer;
+            line-height: 4rem;
+        }
+    </style>
+  </head>
+  <body>
+    <ul id="test">
+      <li>这是第一条</li>
+      <li>这是第二条</li>
+      <li>这是第三条</li>
+    </ul>
+  </body>
+  <script>
+    // 考点1：循环闭包引用指向同一个结果
+    // 考点2：事件委派
+    window.onload = function () {
+      // 利用 let 闭包
+      let liNodes = document.getElementsByTagName('li');
+      for (let index = 0; index < liNodes.length; index++) {
+        liNodes[index].onclick = () => alert(index + 1);
+      }
+
+      // 利用 forEach 解决闭包
+      let children = document.getElementById('test').childNodes;
+      let liNodes = [...children].filter((item) => item.nodeType === 1);
+      liNodes.forEach((item, index) =>
+        item.addEventListener('click', () => alert(index + 1))
+      );
+
+      // 事件委派
+      let ulNode = document.getElementById('test');
+      let liNodes = ulNode.getElementsByTagName('li');
+      ulNode.onclick = ({ target }) => {
+        let index = [...liNodes].findIndex((item) => item === target);
+        index > -1 && alert(index + 1);
+      };
+    };
+  </script>
+</html>
